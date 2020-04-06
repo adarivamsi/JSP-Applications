@@ -1,0 +1,80 @@
+
+<%@ page  import="java.sql.*" import="databaseconnection.*" import="javax.swing.JOptionPane"%>
+		<%@ include file="oheader.jsp"%>
+		<%
+		if(request.getParameter("msg")!=null)
+		{
+			out.println("<script>alert('Keywords Updated Successfully')</script>");
+		}
+		if(request.getParameter("msg1")!=null)
+		{
+			out.println("<script>alert('Row Deleted Successfully')</script>");
+		}
+		%>
+		<form>
+<br><br><br>
+<center>
+          <table bgcolor="" cellpadding="20" cellspacing="5" width="725" border="0" align="center">
+            <tr  bgcolor="#848ea6"> 
+            <tr bgcolor="#848ea6"> 
+              <td align="center"><font color="#110022"><strong>S. No</strong></font></td>
+              <td align="center"> <font color="#110022"><strong>Owner</strong></font></td>
+              <td align="center"><font color="#110022"><strong>File Name</strong></font></td>
+              <td align="center"><font color="#110022"><strong>Keywords</strong></font></td>
+
+              <td align="center"> <font color="#110022"><strong>File Download</strong></font></td>
+			  <td align="center"> <font color="#110022"><strong>Update</strong></font></td>
+			  <td align="center"> <font color="#110022"><strong>Delete</strong></font></td>
+            </tr>
+            <%
+			String u=(String)session.getAttribute("owner");
+			
+
+
+ResultSet rs=null;
+String all="allowed";
+try
+{
+	Connection con = databasecon.getconnection();
+	Statement st = con.createStatement();	
+
+    String qry="select sno,  AES_DECRYPT(name,'key'),  AES_DECRYPT(owner,'key'), AES_DECRYPT(keyword,'key') from data where AES_DECRYPT(owner,'key')='"+u+"' ";
+		rs =st.executeQuery(qry);
+		String sno=null,owner=null,name=null,keyword=null;
+	while(rs.next())
+	{
+	sno=rs.getString(1);
+	name=rs.getString(2);
+	owner=rs.getString(3);
+	
+
+	keyword=rs.getString(4);
+	
+	 
+%>
+            <tr bgcolor="#d2d2d2"> 
+              <td align="center"> <strong><font size="3" color="#6300C6"> <%=sno%> </font></strong></td>
+              <td align="center"><strong><font size="3" color="#6300C6"> <%=owner%> </font></strong></td>
+              <td align="center"><strong><font size="3" color="#6300C6"> <%=name%> </font></strong></td>
+              <td align="center"><strong><font size="3" color="#FF3300"> <%=keyword%> </font></strong></td>
+
+              <td align="center"><a href="file_download.jsp?id=<%=sno%>"><strong><font color="#6300C6" class="big"> 
+                Download</font></strong></a></td>
+				  <td align="center"><a href="update.jsp?id=<%=sno%>"><strong><font color="#6300C6" class="big"> 
+                Update</font></strong></a></td>
+				  <td align="center"><a href="delete.jsp?id=<%=sno%>"><strong><font color="#6300C6" class="big"> 
+                Delete</font></strong></a></td>
+            </tr>
+            <%
+	   }
+	   }
+	   catch(Exception e1)
+	   {
+	     out.println(e1);
+
+	   }
+ %>
+          </table>
+        </form>
+		<br><br><br><br><br><br><br>
+<%@ include file="footer.jsp"%>
